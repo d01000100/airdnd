@@ -4,7 +4,8 @@ import { Inter } from "next/font/google";
 import { Nunito } from "next/font/google";
 import { Navbar } from "./components/navbar/Navbar";
 import ClientOnly from "./components/ClientOnly";
-import Modal from "./components/modals/Modal";
+import RegisterModal from "./components/modals/RegisterModal";
+import ToasterProvider from "./providers/ToasterProvider";
 
 // Font Objects to get classes to style with those fonts
 // Next includes the fonts in our proyect and exposes them to the client 
@@ -26,7 +27,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <ClientOnly>
-          <Modal />
+          <ToasterProvider />
+          <RegisterModal
+          />
           <Navbar />
         </ClientOnly>
         {children}
