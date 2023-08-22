@@ -1,5 +1,7 @@
 # TODO
 
+- [ ] Make Modal close with Escape and by clicking outside the content
+
 ## Learn more
 
 - React hooks
