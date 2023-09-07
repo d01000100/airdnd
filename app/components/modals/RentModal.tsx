@@ -7,6 +7,8 @@ import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import { FieldValues, useForm } from "react-hook-form";
+import CountrySelect from "../inputs/CountrySelect";
+import dynamic from "next/dynamic";
 
 enum STEPS {
   CATEGORY = 0,
@@ -31,28 +33,38 @@ const RentModal = () => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: {
-      category: '',
+      category: "",
       location: null,
       guestCount: 1,
       roomCount: 1,
       bathroomCount: 1,
-      imageSrc: '',
+      imageSrc: "",
       price: 1,
-      title: '',
-      description: '',
-    }
+      title: "",
+      description: "",
+    },
   });
 
-  const category = watch('category');
+  const category = watch("category");
+  const location = watch("location");
+
+  /* We need to dynamically import the Map component because
+    leaflet needs a ref to the window, and it wouldn't exist
+    if we imported it statically */
+  const Map = useMemo(
+    () => dynamic(() => import("../Map"), { ssr: false }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [location]
+  );
 
   /* Set a specific field of the form data */
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldDirty: true,
       shouldTouch: true,
-      shouldValidate: true
-    })
-  }
+      shouldValidate: true,
+    });
+  };
 
   const onBack = () => {
     setStep((value) => value - 1);
@@ -98,9 +110,7 @@ const RentModal = () => {
           <div key={item.label} className="col-span-1">
             {
               <CategoryInput
-                onClick={
-                  (category) => setCustomValue('category', category)
-                }
+                onClick={(category) => setCustomValue("category", category)}
                 selected={category === item.label}
                 label={item.label}
                 icon={item.icon}
@@ -112,11 +122,27 @@ const RentModal = () => {
     </div>
   );
 
+  if (step === STEPS.LOCATION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Where is your adventure located?"
+          subtitle="Help rangers to pick their preferred terrain!"
+        />
+        <CountrySelect
+          onChange={(value) => setCustomValue("location", value)}
+          value={location}
+        />
+        <Map center={location?.latlng} />
+      </div>
+    );
+  }
+
   return (
     <Modal
       isOpen={rentModal.isOpen}
       onClose={rentModal.onClose}
-      onSubmit={rentModal.onClose}
+      onSubmit={onNext}
       actionLabel={actionLabel}
       secondaryLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
