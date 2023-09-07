@@ -1,6 +1,7 @@
 # TODO
 
 - [ ] Make Modal close with Escape and by clicking outside the content
+- [ ] Make RentModal not advance if we don't have info on the current step
 
 ## Learn more
 
@@ -17,3 +18,4 @@
   - useParams
     - query-string npm package
   - usePathname
+- cloudinary. Media hosting
