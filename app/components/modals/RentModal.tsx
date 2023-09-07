@@ -9,6 +9,7 @@ import CategoryInput from "../inputs/CategoryInput";
 import { FieldValues, useForm } from "react-hook-form";
 import CountrySelect from "../inputs/CountrySelect";
 import dynamic from "next/dynamic";
+import Counter from "../inputs/Counter";
 
 enum STEPS {
   CATEGORY = 0,
@@ -47,6 +48,9 @@ const RentModal = () => {
 
   const category = watch("category");
   const location = watch("location");
+  const guestCount = watch("guestCount");
+  const roomCount = watch("roomCount");
+  const bathroomCount = watch("bathroomCount");
 
   /* We need to dynamically import the Map component because
     leaflet needs a ref to the window, and it wouldn't exist
@@ -136,6 +140,37 @@ const RentModal = () => {
         <Map center={location?.latlng} />
       </div>
     );
+  }
+
+  if(step === STEPS.INFO) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Share some basic info about your table"
+          subtitle="What homebrew do you have?"
+        />
+        <Counter
+          title="Number of players"
+          subtitle="¿How many players fit on your table?"
+          value={guestCount}
+          onChange={(value) => setCustomValue("guestCount", value)}
+        />
+        <hr />
+        <Counter
+          title="Rooms"
+          subtitle="¿How many rooms will the dungeon have?"
+          value={roomCount}
+          onChange={(value) => setCustomValue("roomCount", value)}
+        />
+        <hr />
+        <Counter
+          title="Bathrooms"
+          subtitle="¿How many bathrooms are available for the players?"
+          value={bathroomCount}
+          onChange={(value) => setCustomValue("bathroomCount", value)}
+        />
+      </div>
+    )
   }
 
   return (
