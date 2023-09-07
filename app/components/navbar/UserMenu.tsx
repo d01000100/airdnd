@@ -8,6 +8,7 @@ import useRegisterModal from "@/app/hooks/useRegisterModals";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import { User } from "@prisma/client";
 import { signOut } from "next-auth/react";
+import useRentModal from "@/app/hooks/useRentModal";
 
 interface UserMenuProps {
   currentUser?: User | null
@@ -19,6 +20,15 @@ const UserMenu : React.FC<UserMenuProps> = ({currentUser}) => {
 
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
+  const rentModal = useRentModal();
+
+  const onRent = useCallback(() => {
+    if(!currentUser) {
+      return loginModal.onOpen();
+    }
+
+    rentModal.onOpen();
+  },[currentUser, loginModal, rentModal])
 
   // Caching the creation of toggleOpen function
   // so it doesn't "remakes" itself every render
@@ -32,7 +42,7 @@ const UserMenu : React.FC<UserMenuProps> = ({currentUser}) => {
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
         <div
-          onClick={() => {}}
+          onClick={onRent}
           className="
             hidden
             md:block
@@ -43,7 +53,7 @@ const UserMenu : React.FC<UserMenuProps> = ({currentUser}) => {
             rounded-full
             hover:bg-neutral-100
             transition
-            cursos-pointer
+            cursor-pointer
           "
         >
           Airdnd your table
@@ -91,7 +101,7 @@ const UserMenu : React.FC<UserMenuProps> = ({currentUser}) => {
           <>
             <MenuItem
               onClick={() => {}}
-              label="My trips"
+              label="My games"
             />
             <MenuItem
               onClick={() => {}}
@@ -103,11 +113,11 @@ const UserMenu : React.FC<UserMenuProps> = ({currentUser}) => {
             />
             <MenuItem
               onClick={() => {}}
-              label="My properties"
+              label="My tables"
             />
             <MenuItem
-              onClick={() => {}}
-              label="Airbnb my home"
+              onClick={rentModal.onOpen}
+              label="Airdnd my table"
             />
             <MenuItem
               onClick={() => signOut()}
